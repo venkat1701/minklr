@@ -8,6 +8,8 @@ import io.github.venkat1701.minklr.shortener.services.ShortenerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/mink")
 public class MinklrController {
@@ -23,4 +25,8 @@ public class MinklrController {
         return ResponseEntity.ok().body(this.shortenerService.generateShortenedLink(requestDTO).orElseThrow(() -> new MinklrRedirectCreationException("Failed to create a Redirect")));
     }
 
+    @GetMapping("/{shortenedUrl}")
+    public ResponseEntity<ShortenResponseDTO> leadToUrl(@PathVariable String shortenedUrl) throws MinklrRedirectCreationException {
+        return ResponseEntity.created(URI.create(shortenerService.redirectLink(shortenedUrl))).build();
+    }
 }
